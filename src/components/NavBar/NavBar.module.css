@@ -1,0 +1,42 @@
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  margin-right: 57px;
+  margin-left: 57px;
+}
+.BtnWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 50px;
+  margin-top: 25px;
+}
+
+.btnRed:hover,
+.btnRed:focus-visible {
+  box-shadow: 0 0 8px #890620;
+  border-color: #890620;
+  outline: none;
+}
+.btnRed {
+  border: 1px solid #890620;
+  border-radius: 100px;
+  background: #890620;
+  color: #ffe5e9;
+  transition: all 0.3s ease;
+  width: 180px;
+  text-align: center;
+  font-family: var(--second-family);
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: 2.88px;
+  height: 48px;
+  cursor: pointer;
+}
+
+.line {
+  border: 1px solid rgba(255, 212, 212, 0.46);
+}

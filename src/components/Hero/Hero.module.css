@@ -1,0 +1,57 @@
+.WrapperImg {
+  border-radius: 55px;
+  background: linear-gradient(to right, #890021 50%, transparent 50%),
+    image-set(
+      url('../../assets/img/main_photo_1x.png') 1x,
+      url('../../assets/img/main_photo_2x.png') 2x
+    );
+
+  background-size: 100% 100%, 50% 100%;
+  background-position: left, right;
+  background-repeat: no-repeat;
+  margin: 24px 30px;
+}
+
+.container {
+  width: 640px;
+  margin-top: 115px;
+  margin-left: 55px;
+}
+.textH1 {
+  font-family: var(--second-family);
+  font-weight: 700;
+  font-size: 68px;
+  letter-spacing: 0.12em;
+  color: #ffe5e9;
+  margin-bottom: 20px;
+}
+.text {
+  font-family: var(--second-family);
+  font-weight: 400;
+  font-size: 24px;
+  letter-spacing: 0.12em;
+  color: #ffe5e9;
+  margin-bottom: 57px;
+}
+.btn {
+  width: 200px;
+  height: 60px;
+  font-family: var(--second-family);
+  font-weight: 400;
+  font-size: 24px;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: var(--color-light);
+  border: 1px solid var(--color-light);
+  border-radius: 100px;
+  text-align: center;
+  background-color: rgba(217, 217, 217, 0);
+  margin-bottom: 85px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.btn:hover,
+.btn:focus-visible {
+  box-shadow: 0 0 10px #ffe5e9;
+  outline: none;
+}

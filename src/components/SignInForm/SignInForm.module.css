@@ -1,0 +1,107 @@
+.form {
+  position: relative;
+  background: #fbfbfb;
+  border-radius: 30px;
+  width: 565px;
+  padding: 64px;
+}
+
+.title {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 120%;
+  letter-spacing: -0.02em;
+  color: #3d3d3d;
+  margin-bottom: 13px;
+}
+
+.subtitle {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  color: #7c7878;
+  margin-bottom: 25px;
+}
+
+.label {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.input {
+  border: 1px solid rgba(17, 16, 28, 0.1);
+  border-radius: 12px;
+  padding-top: 16px;
+  padding-left: 18px;
+  padding-bottom: 16px;
+  width: 442px;
+}
+.input::placeholder {
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 125%;
+  color: #3d3d3d;
+}
+
+.passwordWrapper {
+  position: relative;
+}
+
+.toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.error {
+  color: #d32f2f;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.button {
+  border-radius: 30px;
+  padding: 16px 170px;
+  width: 438px;
+  height: 52px;
+  cursor: pointer;
+  background: #890620;
+  font-family: var(--font-family);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 125%;
+  letter-spacing: -0.01em;
+  color: #ffe5e9;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+.button:hover,
+.button:focus {
+  box-shadow: 0 0 10px #890620;
+}
+.icon {
+  width: 20px;
+  height: 20px;
+  fill: var(--color-dark);
+  transition: fill 0.3s ease;
+}
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 10;
+}
+
+.closeIcon {
+  width: 32px;
+  height: 32px;
+  stroke: currentColor;
+}
