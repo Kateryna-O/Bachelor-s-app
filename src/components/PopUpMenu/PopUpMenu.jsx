@@ -1,0 +1,97 @@
+import sprite from '../../assets/icons/sprite.svg';
+import css from './PopUpMenu.module.css';
+
+import avatarMobile1x from '../../assets/img/tess_1x.png';
+import avatarMobile2x from '../../assets/img/tess_2x.png';
+import { useState } from 'react';
+import { Modal } from '../../components/Modal/Modal';
+import { UserSettingsForm } from '../../components/UserSettingsForm/UserSettingsForm';
+
+export const PopUpMenu = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isSettOpen, setIsSettOpen] = useState(false);
+  const [hideOrShow, setHideOrShow] = useState({});
+
+  const handleMenu = () => {
+    setIsOpen(prev => !prev);
+    if (isOpen) {
+      // Плавне закриття
+      setHideOrShow({
+        opacity: 0,
+        transform: 'translateX(-100%)',
+      });
+
+      // Через 400мс (час transition) приховуємо повністю
+      setTimeout(() => {
+        setHideOrShow({
+          opacity: 0,
+          transform: 'translateX(-100%)',
+          visibility: 'hidden',
+          pointerEvents: 'none',
+        });
+      }, 300);
+    } else {
+      // Миттєво показуємо (видимість і взаємодію)
+      setHideOrShow({
+        opacity: 1,
+        transform: 'translateX(0)',
+        visibility: 'visible',
+        pointerEvents: 'auto',
+      });
+    }
+  };
+
+  return (
+    <div className={css.menuContainer}>
+      <div>
+        {isOpen ? (
+          <button onClick={handleMenu} type="button" className={css.button}>
+            <svg className={css.bntCloseIcon}>
+              <use href={`${sprite}#icon-x`} />
+            </svg>
+          </button>
+        ) : (
+          <button onClick={handleMenu} type="button" className={css.button}>
+            <svg className={css.bntOpenIcon}>
+              <use href={`${sprite}#icon-menu`} />
+            </svg>
+          </button>
+        )}
+
+        <div className={css.navVision} style={hideOrShow}>
+          <img
+            src={avatarMobile1x}
+            srcSet={`${avatarMobile1x} 1x, ${avatarMobile2x} 2x`}
+            alt="User photo"
+            aria-label="Upload a photo"
+            loading="lazy"
+            width="75"
+            height="75"
+            className={css.userPhoto}
+          />
+          <h2 className={css.userName}>ness</h2>
+          <p className={css.userNumber}>номер</p>
+          <div className={css.buttonContainer}>
+            <button className={css.navBtn} onClick={() => setIsSettOpen(true)}>
+              <svg className={css.navBtnSett}>
+                <use href={`${sprite}#icon-cog`} />
+              </svg>
+              Settings
+            </button>
+            <button className={css.navBtn}>
+              <svg className={css.navBtnLogOut}>
+                <use href={`${sprite}#icon-logout`} />
+              </svg>
+              Log Out
+            </button>
+          </div>
+        </div>
+      </div>
+      {isSettOpen && (
+        <Modal onClose={() => setIsSettOpen(false)}>
+          <UserSettingsForm onClose={() => setIsSettOpen(false)} />
+        </Modal>
+      )}
+    </div>
+  );
+};

@@ -33,7 +33,10 @@
 <path d="M18 22.082v-1.649c2.203-1.241 4-4.337 4-7.432 0-4.971 0-9-6-9s-6 4.029-6 9c0 3.096 1.797 6.191 4 7.432v1.649c-6.784 0.555-12 3.888-12 7.918h28c0-4.030-5.216-7.364-12-7.918z"></path>
 </symbol>
 <symbol id="icon-menu" viewBox="0 0 32 32">
-<path d="M2 6h28v6h-28zM2 14h28v6h-28zM2 22h28v6h-28z"></path>
+ <path shape-rendering="crispEdges" d="M2 6h28v1h-28zM2 14h28v1h-28zM2 22h28v1h-28z"></path>
+</symbol>
+<symbol id="icon-logout" viewBox="0 0 32 32">
+  <path d="M16 4v4h-8v16h8v4h-12v-24h12zM22.586 21.414l2.828-2.828h-11.414v-4h11.414l-2.828-2.828 2.828-2.828 7.414 7.414-7.414 7.414z"></path>
 </symbol>
 </defs>
 </svg>
