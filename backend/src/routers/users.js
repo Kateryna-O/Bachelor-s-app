@@ -14,22 +14,22 @@ import { isValidId } from '../middlewares/isValidId.js';
 
 const router = Router();
 
-router.get('/users', ctrlWrapper(getUsersController));
-router.get('/users/:userId', isValidId, ctrlWrapper(getUsersByIdController));
+router.get('/', ctrlWrapper(getUsersController));
+router.get('/:userId', isValidId, ctrlWrapper(getUsersByIdController));
 router.post(
-  '/users',
+  '/',
   validateBody(createUserSchema),
   ctrlWrapper(createUserController)
 );
-router.delete('/users/:userId', isValidId, ctrlWrapper(deleteUserController));
+router.delete('/:userId', isValidId, ctrlWrapper(deleteUserController));
 router.put(
-  '/users/:userId',
+  '/:userId',
   isValidId,
   validateBody(createUserSchema),
   ctrlWrapper(upsertUserController)
 );
 router.patch(
-  '/users/:userId',
+  '/:userId',
   isValidId,
   validateBody(updateUserSchema),
   ctrlWrapper(patchUserController)
