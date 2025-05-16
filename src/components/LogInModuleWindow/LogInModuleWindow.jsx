@@ -28,65 +28,68 @@ export const LogInModuleWindow = ({ onClose }) => {
     // Тут логіка логіну (API запит, Redux dispatch і т.д.)
   };
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={css.form}>
-      <button
-        type="button"
-        className={css.closeButton}
-        onClick={onClose}
-        aria-label="Close modal"
-      >
-        <svg className={css.closeIcon}>
-          <use href={`${sprite}#icon-x`} />
-        </svg>
-      </button>
-      <h2 className={css.title}>Log In</h2>
-      <p className={css.subtitle}>
-        Welcome back! Please enter your credentials to access your account.
-      </p>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)} className={css.form}>
+        <button
+          type="button"
+          className={css.closeButton}
+          onClick={onClose}
+          aria-label="Close modal"
+        >
+          <svg className={css.closeIcon}>
+            <use href={`${sprite}#icon-x`} />
+          </svg>
+        </button>
+        <h2 className={css.title}>Log In</h2>
+        <p className={css.subtitle}>
+          Welcome back! Please enter your credentials to access your account.
+        </p>
 
-      <label className={css.label}>
-        <input
-          type="email"
-          placeholder="Email"
-          {...register('email')}
-          className={css.input}
-        />
-        {errors.email && (
-          <span className={css.error}>{errors.email.message}</span>
-        )}
-      </label>
-
-      <label className={css.label}>
-        <div className={css.passwordWrapper}>
+        <label className={css.label}>
           <input
-            type={showPassword ? 'text' : 'password'}
-            placeholder="Password"
-            {...register('password')}
+            type="email"
+            placeholder="Email"
+            {...register('email')}
             className={css.input}
           />
-          <span
-            className={css.toggle}
-            onClick={() => setShowPassword(prev => !prev)}
-          >
-            {showPassword ? (
-              <svg className={css.icon}>
-                <use href={`${sprite}#icon-eye`} />
-              </svg>
-            ) : (
-              <svg className={css.icon}>
-                <use href={`${sprite}#icon-eye-blocked`} />
-              </svg>
-            )}
-          </span>
-        </div>
-        {errors.password && (
-          <span className={css.error}>{errors.password.message}</span>
-        )}
-      </label>
+          {errors.email && (
+            <span className={css.error}>{errors.email.message}</span>
+          )}
+        </label>
 
-      <button type="submit" className={css.button}>
-        Log In
-      </button>
-    </form>
+        <label className={css.label}>
+          <div className={css.passwordWrapper}>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
+              {...register('password')}
+              className={css.input}
+            />
+            <span
+              className={css.toggle}
+              onClick={() => setShowPassword(prev => !prev)}
+            >
+              {showPassword ? (
+                <svg className={css.icon}>
+                  <use href={`${sprite}#icon-eye`} />
+                </svg>
+              ) : (
+                <svg className={css.icon}>
+                  <use href={`${sprite}#icon-eye-blocked`} />
+                </svg>
+              )}
+            </span>
+          </div>
+          {errors.password && (
+            <span className={css.error}>{errors.password.message}</span>
+          )}
+        </label>
+
+        <button type="submit" className={css.button}>
+          Log In
+        </button>
+      </form>
+      <a>Forgot your password? Reset?</a>
+    </>
   );
 };

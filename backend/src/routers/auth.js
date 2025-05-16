@@ -1,9 +1,16 @@
 import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { loginUserSchema, registerUserSchema } from '../validation/users.js';
+import {
+  loginUserSchema,
+  registerUserSchema,
+  requestResetEmailSchema,
+} from '../validation/users.js';
 import {
   loginUserController,
+  logoutUserController,
+  refreshUsersSessionController,
   registerUserController,
+  requestResetEmailController,
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
 
@@ -20,4 +27,15 @@ router.post(
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController)
 );
+
+router.post('/logout', ctrlWrapper(logoutUserController));
+
+router.post('/refresh', ctrlWrapper(refreshUsersSessionController));
+
+router.post(
+  '/request-reset-email',
+  validateBody(requestResetEmailSchema),
+  ctrlWrapper(requestResetEmailController)
+);
+
 export default router;
