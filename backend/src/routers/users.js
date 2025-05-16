@@ -12,6 +12,7 @@ import { validateBody } from '../middlewares/validateBody.js';
 import { createUserSchema, updateUserSchema } from '../validation/users.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { authenticate } from '../middlewares/authenticate.js';
+import { upload } from '../middlewares/multer.js';
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.get('/', ctrlWrapper(getUsersController));
 router.get('/:userId', isValidId, ctrlWrapper(getUsersByIdController));
 router.post(
   '/',
+  upload.single('photo'),
   validateBody(createUserSchema),
   ctrlWrapper(createUserController)
 );
@@ -28,12 +30,14 @@ router.delete('/:userId', isValidId, ctrlWrapper(deleteUserController));
 router.put(
   '/:userId',
   isValidId,
+  upload.single('photo'),
   validateBody(createUserSchema),
   ctrlWrapper(upsertUserController)
 );
 router.patch(
   '/:userId',
   isValidId,
+  upload.single('photo'),
   validateBody(updateUserSchema),
   ctrlWrapper(patchUserController)
 );

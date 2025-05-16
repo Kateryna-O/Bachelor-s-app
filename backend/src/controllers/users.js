@@ -8,6 +8,9 @@ import {
 } from '../services/users.js';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
 
 export const getUsersController = async (req, res, next) => {
   try {
@@ -88,7 +91,18 @@ export const upsertUserController = async (req, res, next) => {
 
 export const patchUserController = async (req, res, next) => {
   const { userId } = req.params;
-  const result = await updateUser(userId, req.body);
+  const photo = req.file;
+
+  let photoUrl;
+  if (photo) {
+    if (getEnvVar('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  const result = await updateUser(userId, { ...req.body, photo: photoUrl });
 
   if (!result) {
     next(createHttpError(404, 'User not found'));
