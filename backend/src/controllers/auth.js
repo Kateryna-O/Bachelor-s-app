@@ -7,6 +7,7 @@ import {
   resetPassword,
 } from '../services/auth.js';
 import { ONE_DAY } from '../constants/index.js';
+import { UsersCollection } from '../db/models/users.js';
 
 export const registerUserController = async (req, res) => {
   const user = await registerUser(req.body);
@@ -20,6 +21,9 @@ export const registerUserController = async (req, res) => {
 
 export const loginUserController = async (req, res) => {
   const session = await loginUser(req.body);
+  const user = await UsersCollection.findById(session.userId).select(
+    '-password'
+  );
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
@@ -36,6 +40,7 @@ export const loginUserController = async (req, res) => {
     message: 'Successfully logged in an user',
     data: {
       accessToken: session.accessToken,
+      user,
     },
   });
 };
@@ -70,11 +75,15 @@ export const refreshUsersSessionController = async (req, res) => {
 
   setupSession(res, session);
 
+  const user = await UsersCollection.findById(session.userId).select(
+    '-password'
+  );
   res.json({
     status: 200,
     message: 'Successfully refreshed a session',
     data: {
       accessToken: session.accessToken,
+      user,
     },
   });
 };

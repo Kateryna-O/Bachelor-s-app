@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import css from './LogInModuleWindow.module.css';
 import sprite from '../../assets/icons/sprite.svg';
+import { useDispatch } from 'react-redux';
+import { login } from '../../redux/auth/operations';
+import { useNavigate } from 'react-router-dom';
 
 const schema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required'),
@@ -13,20 +16,36 @@ const schema = Yup.object().shape({
 });
 
 export const LogInModuleWindow = ({ onClose }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const emailId = useId();
+  const passwordId = useId();
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
+    mode: 'onTouched',
+    defaultValues: {
+      email: '',
+      password: '',
+    },
     resolver: yupResolver(schema),
   });
-
-  const onSubmit = data => {
-    console.log('Login data:', data);
-    // Тут логіка логіну (API запит, Redux dispatch і т.д.)
+  const onSubmit = async data => {
+    try {
+      await dispatch(login(data)).unwrap(); // чекаємо завершення логіну
+      navigate('/mainPage'); // переходимо на головну сторінку
+      reset(); // очищаємо форму
+    } catch (error) {
+      console.error('Login failed:', error);
+      // тут можна показати повідомлення про помилку користувачу
+    }
   };
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className={css.form}>
@@ -47,6 +66,7 @@ export const LogInModuleWindow = ({ onClose }) => {
 
         <label className={css.label}>
           <input
+            id={emailId}
             type="email"
             placeholder="Email"
             {...register('email')}
@@ -60,6 +80,7 @@ export const LogInModuleWindow = ({ onClose }) => {
         <label className={css.label}>
           <div className={css.passwordWrapper}>
             <input
+              id={passwordId}
               type={showPassword ? 'text' : 'password'}
               placeholder="Password"
               {...register('password')}
@@ -89,7 +110,6 @@ export const LogInModuleWindow = ({ onClose }) => {
           Log In
         </button>
       </form>
-      <a>Forgot your password? Reset?</a>
     </>
   );
 };

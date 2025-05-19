@@ -1,43 +1,52 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import sprite from '../../assets/icons/sprite.svg';
 import avatarMobile1x from '../../assets/img/tess_1x.png';
 import avatarMobile2x from '../../assets/img/tess_2x.png';
 import css from './UserSettingsForm.module.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectUser, selectUserId } from '../../redux/auth/selectors';
+import { updateUser } from '../../redux/users/operations';
 
 const schema = yup.object().shape({
   userPhone: yup
     .string()
-    .max(12, 'Phone number must be 12 characters or less')
-    .matches(/^\+\d{11}$/, 'Phone number must be in format +XXXXXXXXXXX')
-
-    .required('Phone number is required'),
-  userName: yup
-    .string()
-    .required('Name is required')
-    .min(2, 'Name must be at least 2 characters'),
+    .max(13, 'Phone number must be 13 characters or less')
+    .matches(/^\+\d{12}$/, 'Phone number must be in format +XXXXXXXXXXXX'),
+  userName: yup.string().min(2, 'Name must be at least 2 characters'),
   userBirth: yup
     .date()
-    .typeError('Date is required')
-    .required('Date is required')
-    .max(new Date(), 'Date must be in the past'),
+    .max(new Date(), 'Date must be in the past')
+    .nullable()
+    .transform((curr, orig) => (orig === '' ? null : curr)),
   userBio: yup.string().max(500, 'Bio must be at most 500 characters'),
 });
 
 export const UserSettingsForm = ({ onClose }) => {
-  const [imagePreview, setImagePreview] = useState();
+  const dispatch = useDispatch();
+  const { name, number, photo, aboutMe, dateOfBirth } = useSelector(selectUser);
+  const [imagePreview, setImagePreview] = useState(photo);
+  const userId = useSelector(selectUserId);
 
   const {
     register,
     handleSubmit,
     setValue,
-    trigger,
+    reset,
     formState: { errors },
   } = useForm({
+    mode: 'onTouched',
     resolver: yupResolver(schema),
+    defaultValues: {
+      userName: name || '',
+      userPhone: number || '',
+      userImage: photo || null,
+      userBio: aboutMe || '',
+      userBirth: dateOfBirth || '',
+    },
   });
 
   const handleImageChange = useCallback(
@@ -50,18 +59,46 @@ export const UserSettingsForm = ({ onClose }) => {
         const objectUrl = URL.createObjectURL(file);
         setImagePreview(objectUrl);
         setValue('userImage', file);
-        await trigger('userImage');
       }
     },
-    [imagePreview, setValue, trigger]
+    [imagePreview, setValue]
   );
+  useEffect(() => {
+    if (name !== undefined && number !== undefined) {
+      reset({
+        userName: name,
+        userPhone: number,
+        userImage: photo,
+        userBio: aboutMe,
+        userBirth: dateOfBirth
+          ? new Date(dateOfBirth).toISOString().slice(0, 10)
+          : '',
+      });
+      setImagePreview(photo);
+    }
+  }, [name, number, photo, aboutMe, dateOfBirth, reset]);
+  const onSubmitForm = useCallback(
+    async data => {
+      const formData = new FormData();
+      formData.append('name', data.userName);
+      formData.append('number', data.userPhone);
+      formData.append('dateOfBirth', data.userBirth);
+      formData.append('aboutMe', data.userBio || '');
 
-  const onSubmit = data => {
-    console.log(data);
-  };
+      const resultAction = await dispatch(
+        updateUser({ id: userId, updates: formData })
+      );
 
+      if (updateUser.fulfilled.match(resultAction)) {
+        onClose(false); // закриваємо форму, коли оновлення успішне
+      } else {
+        // Можна показати помилку або залишити форму відкритою
+      }
+    },
+    [dispatch, onClose]
+  );
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={css.formWrapper}>
+    <form onSubmit={handleSubmit(onSubmitForm)} className={css.formWrapper}>
       <button
         type="button"
         onClick={onClose}

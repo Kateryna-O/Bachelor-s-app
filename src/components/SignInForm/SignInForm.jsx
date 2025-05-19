@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import css from './SignInForm.module.css';
 import sprite from '../../assets/icons/sprite.svg';
+import { useDispatch } from 'react-redux';
+import { register as singUp } from '../../redux/auth/operations';
+import { useNavigate } from 'react-router-dom';
 
 const schema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
@@ -15,18 +18,38 @@ const schema = Yup.object().shape({
 
 export const SignInForm = ({ onClose }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const emailId = useId();
+  const passwordId = useId();
+  const nameId = useId();
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
+    mode: 'onTouched',
+    defaultValues: {
+      name: '',
+      email: '',
+      password: '',
+    },
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = data => {
+  const onSubmit = async data => {
     console.log('Login data:', data);
-    // Тут логіка логіну (API запит, Redux dispatch і т.д.)
+    try {
+      await dispatch(singUp(data)).unwrap(); // дождаться результата регистрации
+      navigate('/mainPage'); // перейти только после успешной регистрации
+      reset();
+    } catch (error) {
+      console.error('Registration failed:', error);
+      // здесь можно показать ошибку пользователю
+    }
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={css.form}>
@@ -49,6 +72,7 @@ export const SignInForm = ({ onClose }) => {
 
       <label className={css.label}>
         <input
+          id={nameId}
           type="text"
           placeholder="Name"
           {...register('name', { required: 'Name is required' })}
@@ -61,6 +85,7 @@ export const SignInForm = ({ onClose }) => {
 
       <label className={css.label}>
         <input
+          id={emailId}
           type="email"
           placeholder="Email"
           {...register('email')}
@@ -74,6 +99,7 @@ export const SignInForm = ({ onClose }) => {
       <label className={css.label}>
         <div className={css.passwordWrapper}>
           <input
+            id={passwordId}
             type={showPassword ? 'text' : 'password'}
             placeholder="Password"
             {...register('password')}

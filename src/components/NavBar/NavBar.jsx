@@ -1,15 +1,9 @@
 import { Logo } from '../Logo/Logo';
 import css from './NavBar.module.css';
-import { LogInModuleWindow } from '../../components/LogInModuleWindow/LogInModuleWindow';
-
-import { useState } from 'react';
-import { Modal } from '../../components/Modal/Modal';
-import { SignInForm } from '../../components/SignInForm/SignInForm';
+import { useNavigate } from 'react-router-dom';
 
 export const NavBar = () => {
-  const [isLogInOpen, setIsLogInOpen] = useState(false);
-  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-
+  const navigate = useNavigate();
   return (
     <>
       <div className={css.wrapper}>
@@ -18,32 +12,20 @@ export const NavBar = () => {
           <button
             type="button"
             className={css.btnRed}
-            onClick={() => setIsLogInOpen(true)}
+            onClick={() => navigate('/login')}
           >
             Log in
           </button>
           <button
             type="button"
             className={css.btnRed}
-            onClick={() => setIsSignUpOpen(true)}
+            onClick={() => navigate('/signup')}
           >
             Sing up
           </button>
         </div>
       </div>
       <hr className={css.line} />
-
-      {isLogInOpen && (
-        <Modal onClose={() => setIsLogInOpen(false)}>
-          <LogInModuleWindow onClose={() => setIsLogInOpen(false)} />
-        </Modal>
-      )}
-
-      {isSignUpOpen && (
-        <Modal onClose={() => setIsSignUpOpen(false)}>
-          <SignInForm onClose={() => setIsSignUpOpen(false)} />
-        </Modal>
-      )}
     </>
   );
 };

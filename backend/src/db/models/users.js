@@ -14,7 +14,7 @@ const usersSchema = new Schema(
       match: [/.+@.+\..+/, 'Please fill a valid email address'],
     },
     number: {
-      type: Number,
+      type: String,
     },
     password: {
       type: String,

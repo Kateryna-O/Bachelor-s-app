@@ -9,7 +9,7 @@ import {
 } from '../controllers/users.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateBody } from '../middlewares/validateBody.js';
-import { createUserSchema, updateUserSchema } from '../validation/users.js';
+import { createUserSchema } from '../validation/users.js';
 import { isValidId } from '../middlewares/isValidId.js';
 import { authenticate } from '../middlewares/authenticate.js';
 import { upload } from '../middlewares/multer.js';
@@ -38,7 +38,6 @@ router.patch(
   '/:userId',
   isValidId,
   upload.single('photo'),
-  validateBody(updateUserSchema),
   ctrlWrapper(patchUserController)
 );
 

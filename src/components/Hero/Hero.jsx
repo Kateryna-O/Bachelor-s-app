@@ -1,11 +1,9 @@
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { NavBar } from '../NavBar/NavBar';
 import css from './Hero.module.css';
-import { Modal } from '../../components/Modal/Modal';
-import { SignInForm } from '../../components/SignInForm/SignInForm';
 
 export const Hero = () => {
-  const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const navigate = useNavigate();
   return (
     <div className={css.WrapperImg}>
       <NavBar />
@@ -17,16 +15,11 @@ export const Hero = () => {
         <button
           type="button"
           className={css.btn}
-          onClick={() => setIsSignInOpen(true)}
+          onClick={() => navigate('/signup')}
         >
           Start
         </button>
       </div>
-      {isSignInOpen && (
-        <Modal onClose={() => setIsSignInOpen(false)}>
-          <SignInForm onClose={() => setIsSignInOpen(false)} />
-        </Modal>
-      )}
     </div>
   );
 };
