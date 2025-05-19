@@ -4,6 +4,7 @@ import { PopUpMenu } from '../../components/PopUpMenu/PopUpMenu';
 import sprite from '../../assets/icons/sprite.svg';
 import css from './MainPage.module.css';
 import { fetchUsers } from '../../redux/users/operations';
+import defaultAvatar from '../../assets/img/tess_1x.png';
 
 export const MainPage = () => {
   const dispatch = useDispatch();
@@ -12,32 +13,22 @@ export const MainPage = () => {
   const error = useSelector(state => state.users.error);
 
   const [page, setPage] = useState(1);
+  const [searchEmail, setSearchEmail] = useState(''); // новий стан для пошуку
   const itemsPerPage = 4;
 
   useEffect(() => {
-    console.log('MainPage mounted: dispatching fetchUsers');
     dispatch(fetchUsers())
       .unwrap()
-      .then(data => {
-        console.log('fetchUsers fulfilled with data:', data);
-      })
-      .catch(err => {
-        console.error('fetchUsers rejected with error:', err);
-      });
+      .then(data => console.log('fetchUsers fulfilled with data:', data))
+      .catch(err => console.error('fetchUsers rejected with error:', err));
   }, [dispatch]);
 
-  // Логування при зміні users
-  useEffect(() => {
-    console.log('Users updated:', users);
-  }, [users]);
-
-  // Логування для isLoading і error
-  useEffect(() => {
-    console.log('Loading state:', isLoading, 'Error state:', error);
-  }, [isLoading, error]);
+  // Фільтруємо користувачів за email
+  const filteredUsers = users.filter(user =>
+    user.email?.toLowerCase().includes(searchEmail.toLowerCase())
+  );
 
   const loadMore = () => {
-    console.log('Load more clicked, old page:', page);
     setPage(prevPage => prevPage + 1);
   };
 
@@ -56,8 +47,13 @@ export const MainPage = () => {
         <div className={css.wrapperSearch}>
           <input
             type="text"
-            placeholder="Search..."
+            placeholder="Search by email..."
             className={css.searchInput}
+            value={searchEmail}
+            onChange={e => {
+              setSearchEmail(e.target.value);
+              setPage(1); // при новому пошуку скидаємо сторінку на 1
+            }}
           />
           <button className={css.button}>
             <svg className={css.btnIcon}>
@@ -67,20 +63,22 @@ export const MainPage = () => {
         </div>
       </div>
       <ul className={css.userList}>
-        {users.slice(0, itemsPerPage * page).map(user => (
+        {filteredUsers.slice(0, itemsPerPage * page).map(user => (
           <li key={user._id} className={css.userCard}>
             <img
-              src={user.photo || '../../assets/img/tess_1x.png'}
+              src={user.photo || defaultAvatar}
               alt={user.name}
               className={css.avatar}
             />
-            <p className={css.name}>{user.name}</p>
-            <button className={css.chatButton}>Перейти в чат</button>
+            <div>
+              <p className={css.name}>{user.name}</p>
+              <button className={css.chatButton}>Enter the chat</button>
+            </div>
           </li>
         ))}
       </ul>
 
-      {users.length > itemsPerPage * page && (
+      {filteredUsers.length > itemsPerPage * page && (
         <button type="button" className={css.loadMoreBtn} onClick={loadMore}>
           Load more
         </button>
