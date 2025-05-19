@@ -77,6 +77,7 @@ export const UserSettingsForm = ({ onClose }) => {
       setImagePreview(photo);
     }
   }, [name, number, photo, aboutMe, dateOfBirth, reset]);
+
   const onSubmitForm = useCallback(
     async data => {
       const formData = new FormData();
@@ -85,6 +86,9 @@ export const UserSettingsForm = ({ onClose }) => {
       formData.append('dateOfBirth', data.userBirth);
       formData.append('aboutMe', data.userBio || '');
 
+      if (data.userImage && typeof data.userImage !== 'string') {
+        formData.append('photo', data.userImage); // важливо! назва 'photo' має відповідати тому, що чекає бекенд
+      }
       const resultAction = await dispatch(
         updateUser({ id: userId, updates: formData })
       );

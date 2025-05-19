@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import persistReducer from 'redux-persist/es/persistReducer';
 import storage from 'redux-persist/lib/storage';
-import { authReducer } from './auth/slice';
+import { authReducer } from '../redux/auth/slice';
 import persistStore from 'redux-persist/es/persistStore';
-import { usersReduser } from './users/slice';
+import { usersReducers } from '../redux/users/slice';
 import {
   FLUSH,
   PAUSE,
@@ -12,14 +12,14 @@ import {
   REGISTER,
   REHYDRATE,
 } from 'redux-persist';
+import { setStore } from '../helpers/axios';
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['token'],
 };
 
-const persistedAuthReduser = persistReducer(persistConfig, authReducer);
+const persistedAuthReducer = persistReducer(persistConfig, authReducer);
 
 // const rootReducer = (state, action) => {
 //   return state;
@@ -27,8 +27,8 @@ const persistedAuthReduser = persistReducer(persistConfig, authReducer);
 
 export const store = configureStore({
   reducer: {
-    auth: persistedAuthReduser,
-    users: usersReduser,
+    auth: persistedAuthReducer,
+    users: usersReducers,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
@@ -37,5 +37,7 @@ export const store = configureStore({
       },
     }),
 });
+
+setStore(store);
 
 export const persistor = persistStore(store);

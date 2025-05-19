@@ -1,3 +1,4 @@
+// src/redux/users/operations.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { API } from '../../helpers/axios';
 
@@ -6,7 +7,7 @@ export const fetchUsers = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await API.get('/users');
-      return response.data;
+      return response.data.data.data; // Важливо!
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }

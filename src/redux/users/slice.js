@@ -1,11 +1,12 @@
+// src/redux/users/slice.js
 import { createSlice } from '@reduxjs/toolkit';
 import {
+  fetchUsers,
+  fetchUserById,
   addUsers,
   deleteUsers,
-  fetchUserById,
-  fetchUsers,
   updateUser,
-} from './operations';
+} from '../../redux/users/operations.js';
 
 const initialState = {
   items: [],
@@ -17,8 +18,9 @@ const initialState = {
 const usersSlice = createSlice({
   name: 'users',
   initialState,
-  extraReducer: builder => {
+  extraReducers: builder => {
     builder
+      // Fetch all users
       .addCase(fetchUsers.pending, state => {
         state.isLoading = true;
         state.error = '';
@@ -31,6 +33,7 @@ const usersSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
+      // Fetch user by ID
       .addCase(fetchUserById.pending, state => {
         state.isLoading = true;
         state.error = '';
@@ -43,30 +46,35 @@ const usersSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload;
       })
-      .addCase(deleteUsers.pending, state => {
-        state.isLoading = true;
-        state.error = '';
-      })
-      .addCase(deleteUsers.fulfilled, (state, { payload }) => {
-        state.isLoading = false;
-        state.items = state.items.filter(users => users.id !== payload.id);
-      })
-      .addCase(deleteUsers.rejected, (state, { payload }) => {
-        state.isLoading = false;
-        state.error = payload;
-      })
+      // Add user
       .addCase(addUsers.pending, state => {
         state.isLoading = true;
         state.error = '';
       })
-      .addCase(addUsers.fulfilled, (state, { payload }) => {
+      .addCase(addUsers.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items.push(payload);
+        state.items.push(action.payload);
       })
-      .addCase(addUsers.rejected, (state, { payload }) => {
+      .addCase(addUsers.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = payload;
+        state.error = action.payload;
       })
+      // Delete user
+      .addCase(deleteUsers.pending, state => {
+        state.isLoading = true;
+        state.error = '';
+      })
+      .addCase(deleteUsers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.items = state.items.filter(
+          user => user._id !== action.payload._id
+        );
+      })
+      .addCase(deleteUsers.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      // Update user
       .addCase(updateUser.pending, state => {
         state.isLoading = true;
         state.error = '';
@@ -74,14 +82,15 @@ const usersSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, action) => {
         state.isLoading = false;
         const updatedUser = action.payload;
-        const index = state.items.findIndex(user => user.id === updatedUser.id);
+        const index = state.items.findIndex(
+          user => user._id === updatedUser._id
+        );
         if (index !== -1) {
           state.items[index] = updatedUser;
         }
-        if (state.selectedUser && state.selectedUser.id === updatedUser.id) {
+        if (state.selectedUser && state.selectedUser._id === updatedUser._id) {
           state.selectedUser = updatedUser;
         }
-        state.isLoading = false;
         state.error = '';
       })
       .addCase(updateUser.rejected, (state, action) => {
@@ -91,4 +100,4 @@ const usersSlice = createSlice({
   },
 });
 
-export const usersReduser = usersSlice.reducer;
+export const usersReducers = usersSlice.reducer;

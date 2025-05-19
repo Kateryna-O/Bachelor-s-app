@@ -31,7 +31,6 @@ const handlePending = state => {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-
   extraReducers: builder => {
     builder
       .addCase(register.pending, handlePending)
@@ -58,7 +57,6 @@ const authSlice = createSlice({
         state.isLoggedIn = true;
       })
       .addCase(register.rejected, state => {
-        state.isLoading = false;
         state.isLoggedIn = false;
       })
       .addCase(login.pending, handlePending)
@@ -146,4 +144,5 @@ const authSlice = createSlice({
   },
 });
 
+export const { updateUserLocally } = authSlice.actions;
 export const authReducer = authSlice.reducer;

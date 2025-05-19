@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { API } from '../../helpers/axios.js';
+
 // import { persistor } from '../../redux/store.js';
 
 const setAuthHeader = token => {
@@ -14,7 +15,12 @@ export const register = createAsyncThunk(
   'auth/register',
   async (registerData, thunkAPI) => {
     try {
-      const { data } = await API.post('/auth/register', registerData);
+      await API.post('/auth/register', registerData);
+      const loginData = {
+        email: registerData.email,
+        password: registerData.password,
+      };
+      const { data } = await API.post('/auth/login', loginData);
       setAuthHeader(data.data.accessToken);
       return data;
     } catch (error) {
