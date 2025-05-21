@@ -5,6 +5,8 @@ import { NotFoundPage } from './pages/NotFoundPage/NotFoundPage';
 import { Suspense } from 'react';
 import { LogInPage } from './pages/LogInPage/LogInPage';
 import { SignUpPage } from './pages/SingUpPage/SingUpPage';
+import { ChatPage } from './pages/ChatPage/ChatPage';
+import { Verify2FAPage } from './components/Verify2FAPage/Verify2FAPage';
 
 function App() {
   return (
@@ -14,7 +16,8 @@ function App() {
         <Route path="/mainPage" element={<MainPage />}></Route>
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
-        {/* <Route path="/main/:userId" element={<ChatPage />} /> */}
+        <Route path="/verify-2fa" element={<Verify2FAPage />} />
+        <Route path="/chat/:userId" element={<ChatPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>

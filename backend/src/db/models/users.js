@@ -30,6 +30,16 @@ const usersSchema = new Schema(
     dateOfBirth: {
       type: Date,
     },
+    twoFactorCode: {
+      type: String,
+    },
+    twoFactorExpires: {
+      type: Date,
+    },
+    isTwoFactorVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true, versionKey: false }
 );

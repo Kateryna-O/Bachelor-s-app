@@ -5,6 +5,8 @@ import sprite from '../../assets/icons/sprite.svg';
 import css from './MainPage.module.css';
 import { fetchUsers } from '../../redux/users/operations';
 import defaultAvatar from '../../assets/img/tess_1x.png';
+import { useNavigate } from 'react-router-dom';
+import Loader from '../../components/Loader/Loader';
 
 export const MainPage = () => {
   const dispatch = useDispatch();
@@ -15,6 +17,12 @@ export const MainPage = () => {
   const [page, setPage] = useState(1);
   const [searchEmail, setSearchEmail] = useState(''); // новий стан для пошуку
   const itemsPerPage = 4;
+
+  const navigate = useNavigate();
+
+  const handleChatStart = userId => {
+    navigate(`/chat/${userId}`); // перехід на сторінку чату
+  };
 
   useEffect(() => {
     dispatch(fetchUsers())
@@ -33,7 +41,7 @@ export const MainPage = () => {
   };
 
   if (isLoading && users.length === 0) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   if (error) {
@@ -72,7 +80,12 @@ export const MainPage = () => {
             />
             <div>
               <p className={css.name}>{user.name}</p>
-              <button className={css.chatButton}>Enter the chat</button>
+              <button
+                className={css.chatButton}
+                onClick={() => handleChatStart(user._id)}
+              >
+                Enter the chat
+              </button>
             </div>
           </li>
         ))}

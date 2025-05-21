@@ -13,6 +13,7 @@ import {
   registerUserController,
   requestResetEmailController,
   resetPasswordController,
+  verify2FAController,
 } from '../controllers/auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
 
@@ -29,6 +30,8 @@ router.post(
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController)
 );
+
+router.post('/verify-2fa', ctrlWrapper(verify2FAController));
 
 router.post('/logout', ctrlWrapper(logoutUserController));
 

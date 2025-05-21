@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { API } from '../../helpers/axios.js';
+import { setTempEmail } from './slice.js';
 
 // import { persistor } from '../../redux/store.js';
 
@@ -29,13 +30,41 @@ export const register = createAsyncThunk(
   }
 );
 
+// export const login = createAsyncThunk(
+//   'auth/login',
+//   async (loginData, thunkAPI) => {
+//     try {
+//       const { data } = await API.post('/auth/login', loginData);
+//       setAuthHeader(data.data.accessToken);
+//       return data;
+//     } catch (error) {
+//       return thunkAPI.rejectWithValue(error.message);
+//     }
+//   }
+// );
 export const login = createAsyncThunk(
   'auth/login',
   async (loginData, thunkAPI) => {
     try {
       const { data } = await API.post('/auth/login', loginData);
-      setAuthHeader(data.data.accessToken);
-      return data;
+      const accessToken = data?.data?.accessToken;
+      const requires2FA = data?.data?.requires2FA;
+      const email = data?.data?.email;
+
+      // Якщо токен є — все нормально, користувач залогінився
+      if (accessToken) {
+        setAuthHeader(accessToken);
+        return data.data;
+      }
+
+      // Якщо токена нема, але user повернутий — значить треба 2FA
+      if (requires2FA && email) {
+        thunkAPI.dispatch(setTempEmail(email));
+        return data.data; // Повертаємо user без токена
+      }
+
+      // fallback
+      return thunkAPI.rejectWithValue('Невідомий формат відповіді сервера');
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -95,6 +124,20 @@ export const resetPwd = createAsyncThunk(
       return response;
     } catch (error) {
       thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const verify2FA = createAsyncThunk(
+  'auth/verify2FA',
+  async ({ email, code }, thunkAPI) => {
+    console.log('🧪 sending verify2FA request:', { email, code });
+    try {
+      const { data } = await API.post('/auth/verify-2fa', { email, code });
+      setAuthHeader(data.data.accessToken);
+      return data.data;
+    } catch (err) {
+      console.error('❌ verify2FA error:', err.response?.data || err.message);
+      return thunkAPI.rejectWithValue(err.message || '2FA failed');
     }
   }
 );
