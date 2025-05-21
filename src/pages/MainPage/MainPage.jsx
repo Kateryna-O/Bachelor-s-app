@@ -6,6 +6,7 @@ import css from './MainPage.module.css';
 import { fetchUsers } from '../../redux/users/operations';
 import defaultAvatar from '../../assets/img/tess_1x.png';
 import { useNavigate } from 'react-router-dom';
+import Loader from '../../components/Loader/Loader';
 
 export const MainPage = () => {
   const dispatch = useDispatch();
@@ -40,7 +41,7 @@ export const MainPage = () => {
   };
 
   if (isLoading && users.length === 0) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   if (error) {

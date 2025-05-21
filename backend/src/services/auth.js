@@ -59,17 +59,17 @@ export const logoutUser = async sessionId => {
   await SessionsCollection.deleteOne({ _id: sessionId });
 };
 
-const createSession = () => {
-  const accessToken = randomBytes(30).toString('base64');
-  const refreshToken = randomBytes(30).toString('base64');
+// const createSession = () => {
+//   const accessToken = randomBytes(30).toString('base64');
+//   const refreshToken = randomBytes(30).toString('base64');
 
-  return {
-    accessToken,
-    refreshToken,
-    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
-    refreshTokenValidUntil: new Date(Date.now() + ONE_DAY),
-  };
-};
+//   return {
+//     accessToken,
+//     refreshToken,
+//     accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
+//     refreshTokenValidUntil: new Date(Date.now() + ONE_DAY),
+//   };
+// };
 
 export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
   const session = await SessionsCollection.findOne({
@@ -163,4 +163,22 @@ export const resetPassword = async payload => {
     { _id: user._id },
     { password: encryptedPassword }
   );
+};
+export const createSession = async userId => {
+  const accessToken = randomBytes(30).toString('base64');
+  const refreshToken = randomBytes(30).toString('base64');
+
+  const session = await SessionsCollection.create({
+    userId,
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
+    refreshTokenValidUntil: new Date(Date.now() + ONE_DAY),
+  });
+
+  return {
+    _id: session._id,
+    accessToken: session.accessToken,
+    refreshToken: session.refreshToken,
+  };
 };

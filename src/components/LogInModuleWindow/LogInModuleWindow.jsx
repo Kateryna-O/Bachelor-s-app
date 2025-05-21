@@ -6,6 +6,7 @@ import css from './LogInModuleWindow.module.css';
 import sprite from '../../assets/icons/sprite.svg';
 import { useDispatch } from 'react-redux';
 import { login } from '../../redux/auth/operations';
+import { verify2FA } from '../../redux/auth/operations'; // 👈 додаємо
 import { useNavigate } from 'react-router-dom';
 
 const schema = Yup.object().shape({
@@ -19,6 +20,10 @@ export const LogInModuleWindow = ({ onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [show2FA, setShow2FA] = useState(false); // 👈
+  const [tempEmail, setTempEmail] = useState(''); // 👈
+  const [code, setCode] = useState(''); // 👈
+
   const emailId = useId();
   const passwordId = useId();
 
@@ -35,81 +40,122 @@ export const LogInModuleWindow = ({ onClose }) => {
     },
     resolver: yupResolver(schema),
   });
+
   const onSubmit = async data => {
     try {
-      await dispatch(login(data)).unwrap(); // чекаємо завершення логіну
-      navigate('/mainPage'); // переходимо на головну сторінку
-      reset(); // очищаємо форму
+      const result = await dispatch(login(data)).unwrap();
+      console.log('Login response:', result);
+      if (result?.accessToken) {
+        navigate('/mainPage');
+        reset();
+      } else if (result?.requires2FA && result?.email) {
+        setTempEmail(result.email);
+        setShow2FA(true);
+      }
     } catch (error) {
       console.error('Login failed:', error);
-      // тут можна показати повідомлення про помилку користувачу
     }
   };
 
+  const handle2FASubmit = async e => {
+    e.preventDefault();
+    try {
+      const result = await dispatch(
+        verify2FA({ code, email: tempEmail })
+      ).unwrap();
+      if (result?.accessToken) {
+        navigate('/mainPage');
+        setCode('');
+        reset();
+      }
+    } catch (error) {
+      console.error('2FA verification failed:', error);
+    }
+  };
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className={css.form}>
-        <button
-          type="button"
-          className={css.closeButton}
-          onClick={onClose}
-          aria-label="Close modal"
-        >
-          <svg className={css.closeIcon}>
-            <use href={`${sprite}#icon-x`} />
-          </svg>
-        </button>
-        <h2 className={css.title}>Log In</h2>
-        <p className={css.subtitle}>
-          Welcome back! Please enter your credentials to access your account.
-        </p>
+      {!show2FA && (
+        <form onSubmit={handleSubmit(onSubmit)} className={css.form}>
+          <button
+            type="button"
+            className={css.closeButton}
+            onClick={onClose}
+            aria-label="Close modal"
+          >
+            <svg className={css.closeIcon}>
+              <use href={`${sprite}#icon-x`} />
+            </svg>
+          </button>
+          <h2 className={css.title}>Log In</h2>
+          <p className={css.subtitle}>
+            Welcome back! Please enter your credentials to access your account.
+          </p>
 
-        <label className={css.label}>
-          <input
-            id={emailId}
-            type="email"
-            placeholder="Email"
-            {...register('email')}
-            className={css.input}
-          />
-          {errors.email && (
-            <span className={css.error}>{errors.email.message}</span>
-          )}
-        </label>
-
-        <label className={css.label}>
-          <div className={css.passwordWrapper}>
+          <label className={css.label}>
             <input
-              id={passwordId}
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Password"
-              {...register('password')}
+              id={emailId}
+              type="email"
+              placeholder="Email"
+              {...register('email')}
               className={css.input}
             />
-            <span
-              className={css.toggle}
-              onClick={() => setShowPassword(prev => !prev)}
-            >
-              {showPassword ? (
-                <svg className={css.icon}>
-                  <use href={`${sprite}#icon-eye`} />
-                </svg>
-              ) : (
-                <svg className={css.icon}>
-                  <use href={`${sprite}#icon-eye-blocked`} />
-                </svg>
-              )}
-            </span>
-          </div>
-          {errors.password && (
-            <span className={css.error}>{errors.password.message}</span>
-          )}
-        </label>
+            {errors.email && (
+              <span className={css.error}>{errors.email.message}</span>
+            )}
+          </label>
 
-        <button type="submit" className={css.button}>
-          Log In
-        </button>
-      </form>
+          <label className={css.label}>
+            <div className={css.passwordWrapper}>
+              <input
+                id={passwordId}
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Password"
+                {...register('password')}
+                className={css.input}
+              />
+              <span
+                className={css.toggle}
+                onClick={() => setShowPassword(prev => !prev)}
+              >
+                {showPassword ? (
+                  <svg className={css.icon}>
+                    <use href={`${sprite}#icon-eye`} />
+                  </svg>
+                ) : (
+                  <svg className={css.icon}>
+                    <use href={`${sprite}#icon-eye-blocked`} />
+                  </svg>
+                )}
+              </span>
+            </div>
+            {errors.password && (
+              <span className={css.error}>{errors.password.message}</span>
+            )}
+          </label>
+
+          <button type="submit" className={css.button}>
+            Log In
+          </button>
+        </form>
+      )}
+
+      {show2FA && (
+        <form onSubmit={handle2FASubmit} className={css.form}>
+          <h3 className={css.subtitle}>
+            Enter the 2FA code sent to your email
+          </h3>
+          <input
+            type="text"
+            placeholder="Enter 6-digit code"
+            value={code}
+            onChange={e => setCode(e.target.value)}
+            className={css.input}
+          />
+          <button type="submit" className={css.button}>
+            Verify Code
+          </button>
+        </form>
+      )}
     </>
   );
 };
