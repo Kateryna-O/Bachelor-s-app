@@ -12,18 +12,29 @@ const clearAuthHeader = () => {
   API.defaults.headers.common.Authorization = '';
 };
 
+// export const register = createAsyncThunk(
+//   'auth/register',
+//   async (registerData, thunkAPI) => {
+//     try {
+//       await API.post('/auth/register', registerData);
+//       const loginData = {
+//         email: registerData.email,
+//         password: registerData.password,
+//       };
+//       const { data } = await API.post('/auth/login', loginData);
+//       setAuthHeader(data.data.accessToken);
+//       return data;
+//     } catch (error) {
+//       return thunkAPI.rejectWithValue(error.message);
+//     }
+//   }
+// );
 export const register = createAsyncThunk(
   'auth/register',
   async (registerData, thunkAPI) => {
     try {
-      await API.post('/auth/register', registerData);
-      const loginData = {
-        email: registerData.email,
-        password: registerData.password,
-      };
-      const { data } = await API.post('/auth/login', loginData);
-      setAuthHeader(data.data.accessToken);
-      return data;
+      const { data } = await API.post('/auth/register', registerData);
+      return data; // Повертаємо success повідомлення
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
