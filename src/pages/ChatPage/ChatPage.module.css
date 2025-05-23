@@ -1,0 +1,124 @@
+.avatar {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.name {
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 28px;
+  letter-spacing: -0.01em;
+  color: #3d3d3d;
+  margin-bottom: 8px;
+}
+
+.userCard {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  padding: 18px 26px;
+  gap: 30px;
+  align-items: center;
+}
+.icon {
+  position: relative;
+  top: 30px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
+  fill: var(--color-primary);
+  display: inline-block;
+  stroke-width: 0;
+}
+.wrapperHeader {
+  display: flex;
+  gap: 40px;
+}
+.btnBack {
+  background-color: transparent;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+}
+.chatWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* вся висота екрану */
+}
+
+.chatBody {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  overflow-y: auto;
+  background-color: transparent;
+  flex: 1;
+  padding: 1rem;
+}
+
+.message {
+  max-width: 60%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  background-color: var(--color-light);
+  align-self: flex-start;
+  position: relative;
+  word-break: break-word;
+  font-size: 14px;
+  font-family: var(--font-family);
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: #3d3d3d;
+}
+
+.own {
+  background-color: #f2cbd3;
+  color: #3d3d3d;
+  align-self: flex-end;
+}
+
+.timestamp {
+  display: block;
+  font-size: 10px;
+  color: #3d3d3d;
+  margin-top: 4px;
+  text-align: right;
+}
+
+.sendButton {
+  margin-left: 0.5rem;
+  background-color: var(--color-primary);
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.chatInputWrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  align-self: end;
+  background: white;
+  justify-content: space-between;
+  height: 3.5rem;
+  gap: 1rem;
+  padding: 0.8rem;
+  border-radius: 1rem;
+}
+.chatInputWrapper > input {
+  height: 70%;
+  background-color: rgb(236, 236, 236);
+  border-radius: 0.5rem;
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+  padding: 0px 15px 0px 15px;
+}
