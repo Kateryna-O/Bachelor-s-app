@@ -40,15 +40,26 @@ export const SignInForm = ({ onClose }) => {
     resolver: yupResolver(schema),
   });
 
+  // const onSubmit = async data => {
+  //   console.log('Login data:', data);
+  //   try {
+  //     await dispatch(singUp(data)).unwrap(); // дождаться результата регистрации
+  //     navigate('/mainPage'); // перейти только после успешной регистрации
+  //     reset();
+  //   } catch (error) {
+  //     console.error('Registration failed:', error);
+  //     // здесь можно показать ошибку пользователю
+  //   }
+  // };
   const onSubmit = async data => {
-    console.log('Login data:', data);
     try {
-      await dispatch(singUp(data)).unwrap(); // дождаться результата регистрации
-      navigate('/mainPage'); // перейти только после успешной регистрации
-      reset();
+      await dispatch(singUp(data)).unwrap(); // чекаємо результату
+      // alert('Ви успішно зареєстровані! Увійдіть у свій акаунт.'); // або toast
+      navigate('/login'); // редірект на логін
+      reset(); // очищення форми
+      // onClose(); // закриваємо модалку (не обов'язково, якщо переходить сторінка)
     } catch (error) {
       console.error('Registration failed:', error);
-      // здесь можно показать ошибку пользователю
     }
   };
   return (

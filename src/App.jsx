@@ -17,7 +17,7 @@ function App() {
         <Route path="/login" element={<LogInPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/verify-2fa" element={<Verify2FAPage />} />
-        <Route path="/chat/:userId" element={<ChatPage />} />
+        <Route path="/chat" element={<ChatPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>

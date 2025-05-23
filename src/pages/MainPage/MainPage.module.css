@@ -3,6 +3,7 @@
   justify-content: center;
   align-items: center;
   padding: 30px, 35px;
+  flex-direction: column;
 }
 .wrapperSearch {
   margin-left: 70px;
@@ -60,43 +61,6 @@
   display: flex;
   padding: 18px 26px;
   gap: 30px;
-}
-
-.avatar {
-  width: 65px;
-  height: 65px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.name {
-  font-family: var(--font-family);
-  font-weight: 600;
-  font-size: 28px;
-  letter-spacing: -0.01em;
-  color: #3d3d3d;
-  margin-bottom: 8px;
-}
-
-.chatButton {
-  font-family: var(--font-family);
-  font-weight: 600;
-  font-size: 16px;
-  letter-spacing: -0.01em;
-  text-align: center;
-  color: #ffe5e9;
-  border-radius: 42px;
-  width: 200px;
-  height: 30px;
-  background: #890620;
-  text-align: center;
-  padding: auto;
-}
-
-.chatButton:hover,
-.chatButton:focus {
-  box-shadow: 0 0 10px #ffe5e9;
-  outline: none;
 }
 
 .error {
