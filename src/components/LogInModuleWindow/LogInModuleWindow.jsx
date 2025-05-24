@@ -5,9 +5,10 @@ import * as Yup from 'yup';
 import css from './LogInModuleWindow.module.css';
 import sprite from '../../assets/icons/sprite.svg';
 import { useDispatch } from 'react-redux';
-import { login } from '../../redux/auth/operations';
-import { verify2FA } from '../../redux/auth/operations'; // 👈 додаємо
+import { login, verify2FA } from '../../redux/auth/operations';
 import { useNavigate } from 'react-router-dom';
+import { API } from '../../helpers/axios';
+import { generateRSAKeyPair } from '../../helpers/cryptoKeys';
 
 const schema = Yup.object().shape({
   email: Yup.string().email('Invalid email').required('Email is required'),
@@ -20,9 +21,9 @@ export const LogInModuleWindow = ({ onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [show2FA, setShow2FA] = useState(false); // 👈
-  const [tempEmail, setTempEmail] = useState(''); // 👈
-  const [code, setCode] = useState(''); // 👈
+  const [show2FA, setShow2FA] = useState(false);
+  const [tempEmail, setTempEmail] = useState('');
+  const [code, setCode] = useState('');
 
   const emailId = useId();
   const passwordId = useId();
@@ -41,11 +42,36 @@ export const LogInModuleWindow = ({ onClose }) => {
     resolver: yupResolver(schema),
   });
 
+  const setupKeys = async accessToken => {
+    const existingKey = localStorage.getItem('privateKey');
+    console.log('Checking for privateKey:', existingKey);
+
+    if (existingKey) return;
+
+    console.log('Generating RSA key pair...');
+    const { publicKey, privateKey } = await generateRSAKeyPair();
+    console.log('Generated keys:', { publicKey, privateKey });
+
+    localStorage.setItem('privateKey', privateKey);
+
+    try {
+      console.log('Sending publicKey to server...');
+      const res = await API.post(
+        '/users/public-key',
+        { publicKey },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      console.log('Upload response:', res.data);
+    } catch (err) {
+      console.error('Error uploading public key:', err);
+    }
+  };
+
   const onSubmit = async data => {
     try {
       const result = await dispatch(login(data)).unwrap();
-      console.log('Login response:', result);
       if (result?.accessToken) {
+        await setupKeys(result.accessToken);
         navigate('/mainPage');
         reset();
       } else if (result?.requires2FA && result?.email) {
@@ -64,6 +90,7 @@ export const LogInModuleWindow = ({ onClose }) => {
         verify2FA({ code, email: tempEmail })
       ).unwrap();
       if (result?.accessToken) {
+        await setupKeys(result.accessToken);
         navigate('/mainPage');
         setCode('');
         reset();
@@ -72,6 +99,7 @@ export const LogInModuleWindow = ({ onClose }) => {
       console.error('2FA verification failed:', error);
     }
   };
+
   return (
     <>
       {!show2FA && (

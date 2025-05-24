@@ -11,6 +11,7 @@ import { parseSortParams } from '../utils/parseSortParams.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { UsersCollection } from '../db/models/users.js';
 
 export const getUsersController = async (req, res, next) => {
   try {
@@ -114,4 +115,37 @@ export const patchUserController = async (req, res, next) => {
     message: 'Successfully patched a user',
     data: result.user,
   });
+};
+export const uploadPublicKey = async (req, res) => {
+  try {
+    const { publicKey } = req.body;
+    const userId = req.user.id;
+
+    if (!publicKey) {
+      return res.status(400).json({ message: 'Public key is required' });
+    }
+
+    await UsersCollection.findByIdAndUpdate(userId, { publicKey });
+    return res.status(200).json({ message: 'Public key saved successfully' });
+  } catch (error) {
+    console.error('Error saving public key:', error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+export const getUserPublicKey = async (req, res) => {
+  try {
+    const user = await UsersCollection.findById(req.params.id).select(
+      'publicKey'
+    );
+
+    if (!user || !user.publicKey) {
+      return res.status(404).json({ message: 'Public key not found' });
+    }
+
+    return res.status(200).json({ publicKey: user.publicKey });
+  } catch (error) {
+    console.error('Error fetching public key:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 };
