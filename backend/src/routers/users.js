@@ -2,9 +2,11 @@ import { Router } from 'express';
 import {
   createUserController,
   deleteUserController,
+  getUserPublicKey,
   getUsersByIdController,
   getUsersController,
   patchUserController,
+  uploadPublicKey,
   upsertUserController,
 } from '../controllers/users.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
@@ -40,5 +42,7 @@ router.patch(
   upload.single('photo'),
   ctrlWrapper(patchUserController)
 );
+router.post('/public-key', uploadPublicKey);
 
+router.get('/:id/public-key', getUserPublicKey);
 export default router;

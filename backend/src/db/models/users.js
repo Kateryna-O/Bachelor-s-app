@@ -40,6 +40,9 @@ const usersSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    publicKey: {
+      type: String,
+    },
   },
   { timestamps: true, versionKey: false }
 );

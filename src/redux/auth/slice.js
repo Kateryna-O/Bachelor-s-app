@@ -21,6 +21,7 @@ const initialState = {
     twoFactorCode: null,
     twoFactorExpires: null,
     isTwoFactorVerified: false,
+    publicKey: null,
   },
   token: null,
   isLoading: false,
@@ -85,6 +86,7 @@ const authSlice = createSlice({
           aboutMe,
           dateOfBirth,
           isTwoFactorVerified,
+          publicKey,
         } = user;
 
         // Якщо 2FA активна, не видаємо токен одразу
@@ -103,6 +105,7 @@ const authSlice = createSlice({
             aboutMe,
             dateOfBirth,
             isTwoFactorVerified,
+            publicKey,
           };
           state.token = payload.data.accessToken;
           state.isLoggedIn = true;
