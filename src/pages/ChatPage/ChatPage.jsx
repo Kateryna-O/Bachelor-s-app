@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchUserById } from '../../redux/users/operations';
@@ -22,7 +22,7 @@ export const ChatPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { sendMessage, receiveMessage } = useSocket(currentUser);
-
+  const scroll = useRef();
   const [userData, setUserData] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessages] = useState('');
@@ -193,6 +193,10 @@ export const ChatPage = () => {
     }
   };
 
+  useEffect(() => {
+    scroll.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   if (!userData) return <Loader />;
 
   return (
@@ -216,6 +220,7 @@ export const ChatPage = () => {
       <div className={css.chatBody}>
         {messages.map(message => (
           <div
+            ref={scroll}
             key={message._id}
             className={`${css.message} ${
               message.senderId === currentUser ? css.own : ''
