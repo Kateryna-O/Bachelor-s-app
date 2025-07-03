@@ -24,3 +24,13 @@ export const generateRSAKeyPair = async () => {
     privateKey: btoa(String.fromCharCode(...new Uint8Array(privateKey))),
   };
 };
+
+// Ця функція:
+
+// Генерує пару ключів RSA.
+
+// Експортує їх у форматі spki і pkcs8.
+
+// Кодує їх у base64.
+
+// Повертає об’єкт { publicKey, privateKey }.
